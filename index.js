@@ -66,11 +66,11 @@ miio
             console.log('PM2_5:', Quality);
       });
       device.on('relativeHumidityChanged', rh => {
-            client.publish('airpurifier/out', '{"CurrentRelativeHumidity":' + rh + '}');
+            client.publish('airpurifier/out', JSON.stringify({"CurrentRelativeHumidity" : Math.round(rh)}));
             console.log('Humidity:', rh);
       });
       device.on('temperatureChanged', temp  => {
-        client.publish('airpurifier/out', '{"CurrentTemperature":' + temp.celsius  + '}');
+        client.publish('airpurifier/out', JSON.stringify({"CurrentTemperature" : Math.round(temp.celsius)}));
         console.log('Temperature:', temp.celsius );
       });
     })
@@ -106,8 +106,8 @@ function getStatus(device) {
 
           myStatus.LockPhysicalControls = status.child_lock.value;
 
-          myStatus.CurrentTemperature = status.temperature.value;
-          myStatus.CurrentRelativeHumidity = status.humidity.value;
+          myStatus.CurrentTemperature = Math.round(status.temperature.value);  ////!!!!Math.round
+          myStatus.CurrentRelativeHumidity = Math.round(status.humidity.value); ////!!!!Math.round
           
           myStatus.Active = (status.power.value)?1:0;
           myStatus.TargetAirPurifierState = (status.mode.value==0)?1:0
