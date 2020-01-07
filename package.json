@@ -20,6 +20,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "easy-pid-file": "^1.0.7",
     "miio": "github:avgays/miio",
     "mqtt": "^3.0.0"
   }

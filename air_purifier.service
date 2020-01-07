@@ -1,0 +1,18 @@
+[Unit]
+Description=Mi Airpurifier server
+After=network.target remote-fs.target nss-lookup.target
+##After=rsyslog.service
+
+[Service]
+User=root
+Type=simple
+WorkingDirectory=/home/pi/mi-air-purifier3/
+ExecStart=/usr/bin/node ./index.js
+Restart=always
+RestartSec=500ms
+StartLimitInterval=0
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
+

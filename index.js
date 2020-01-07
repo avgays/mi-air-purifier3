@@ -1,8 +1,13 @@
 const miio = require('miio');
 const mqtt = require('mqtt');
+const pidfile = require('easy-pid-file')('/var/run/torgi.pid');
+
 var myStatus = {};
 var client  = mqtt.connect('mqtt://192.168.1.122');
 var purifier;
+
+console.log("pidfile", pidfile.getState());
+
 client.on('connect', function () {
   console.log('MQTT connected');
   client.subscribe('airpurifier/in', function (err) {
