@@ -1,6 +1,6 @@
 const miio = require('miio');
 const mqtt = require('mqtt');
-const pidfile = require('easy-pid-file')('/var/run/torgi.pid');
+const pidfile = require('easy-pid-file')('/var/run/air_purifier.pid');
 
 var myStatus = {};
 var client  = mqtt.connect('mqtt://192.168.1.122');
@@ -89,13 +89,14 @@ function airQuality (pm2_5) {
   return pm2_5Q;
 }
 
-
+const map = (value, x1, y1, x2, y2) => Math.round((value - x1) * (y2 - x2) / (y1 - x1) + x2);
 
 function getStatus(device) {
       device
       .loadProperties(['mode','filter1_life','aqi', 'child_lock','power','temperature','humidity','fan','buzzer','led_brightness','motor_speed', 'favorite_level'])
       .then(status => {
           let pm2_5 = status.aqi.value
+          let currSpeed = map(status.motor_speed.value, 350, 2200, 1, 14);
 
           myStatus.FilterLifeLevel = status.filter1_life.value;
           myStatus.FilterChangeIndication = (myStatus.FilterLifeLevel>5)?0:1;
@@ -108,12 +109,11 @@ function getStatus(device) {
           myStatus.CurrentTemperature = status.temperature.value;
           myStatus.CurrentRelativeHumidity = status.humidity.value;
           
-          
           myStatus.Active = (status.power.value)?1:0;
           myStatus.TargetAirPurifierState = (status.mode.value==0)?1:0
           myStatus.CurrentAirPurifierState = (status.motor_speed.value>0 && status.power.value)?2:0;
-          myStatus.RotationSpeed = status.favorite_level.value;
-          
+          myStatus.RotationSpeed = (status.mode.value==0) ? currSpeed : status.favorite_level.value;
+
           //myStatus.mode = status.mode.value;
           //myStatus.fan = status.fan.value;
           myStatus.motor_speed = status.motor_speed.value;
@@ -123,6 +123,7 @@ function getStatus(device) {
 
 
           client.publish('airpurifier', JSON.stringify(myStatus));
+//          console.log('motor_speed:', status.favorite_level.value, currSpeed, status.motor_speed.value);
           //console.log('Status:', myStatus);
       })
       .catch(err => {console.log('Error Device' , err)});
