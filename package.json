@@ -1,0 +1,26 @@
+{
+  "name": "mi-air-purifier3",
+  "version": "0.0.1",
+  "description": "Basic implementation for Mi Air Purifier 3",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mi",
+    "airpurifier3",
+    "xiaomi",
+    "mqtt",
+    "miot"
+  ],
+  "author": "kingkong123",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/avgays/mi-air-purifier3"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "miio": "github:avgays/miio",
+    "mqtt": "^3.0.0"
+  }
+}
